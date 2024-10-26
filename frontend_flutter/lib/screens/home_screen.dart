@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/services.dart'; // Import the services package
 import '../services/interest_calculator.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -138,7 +139,7 @@ class _LoanFormState extends State<LoanForm> {
                 _result,
                 style: const TextStyle(fontSize: 16),
               ),
-              //const Text('Current outstanding balance:'),
+              // const Text('Current outstanding balance:'),
               //Text('\$${_currentOutstandingBalance.toStringAsFixed(2)}'),
               const SizedBox(height: 20),
               Container(
@@ -207,6 +208,9 @@ class _LoanFormState extends State<LoanForm> {
       ),
       keyboardType: TextInputType.number,
       readOnly: readOnly,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly
+      ], // Limit input to numbers only
       validator: (value) {
         if (value == null || value.isEmpty) {
           return validationMessage;
@@ -284,6 +288,24 @@ class _LoanFormState extends State<LoanForm> {
               },
               reservedSize: 40,
             ),
+          ),
+        ),
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+            // tooltipBgColor: Colors.blueGrey,
+            tooltipPadding: const EdgeInsets.all(8),
+            tooltipMargin: 8,
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              String interestType = rodIndex == 0 ? 'Simple' : 'Compound';
+              return BarTooltipItem(
+                '$interestType Interest\n${rod.toY.toStringAsFixed(2)}',
+                const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              );
+            },
           ),
         ),
       ),
