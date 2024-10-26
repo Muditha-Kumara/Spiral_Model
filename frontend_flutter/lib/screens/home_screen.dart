@@ -116,24 +116,38 @@ class _LoanFormState extends State<LoanForm> {
         child: Form(
           key: _formKey,
           autovalidateMode:
-              AutovalidateMode.onUserInteraction, // Enable real-time validation
+              AutovalidateMode.disabled, // Disable real-time validation
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Loan Type:', style: TextStyle(fontSize: 16)),
               _buildLoanTypeRadioButtons(),
               const SizedBox(height: 16),
-              _buildTextField(_principalController, 'Principal',
-                  'Please enter the principal amount in range 1 - 10000',
-                  min: 1, max: 10000, lastValidValue: _lastValidPrincipal),
+              _buildTextFieldWithInstruction(
+                  _principalController,
+                  'Principal',
+                  'Please enter the principal amount',
+                  'Enter a value between 1 and 10000',
+                  min: 1,
+                  max: 10000,
+                  lastValidValue: _lastValidPrincipal),
               const SizedBox(height: 16),
-              _buildTextField(_rateController, 'Interest Rate (%)',
-                  'Please select a loan type to populate the rate',
-                  readOnly: true, lastValidValue: "Select a loan type"),
+              _buildTextFieldWithInstruction(
+                  _rateController,
+                  'Interest Rate (%)',
+                  'Please select a loan type',
+                  'This field is read-only. Select a loan type to change the rate',
+                  readOnly: true,
+                  lastValidValue: ''), // No validation needed
               const SizedBox(height: 16),
-              _buildTextField(_durationController, 'Duration (years)',
-                  'Please enter the duration in range 1 - 15',
-                  min: 1, max: 15, lastValidValue: _lastValidDuration),
+              _buildTextFieldWithInstruction(
+                  _durationController,
+                  'Duration (years)',
+                  'Please enter the duration in years',
+                  'Enter a value between 1 and 10',
+                  min: 1,
+                  max: 10,
+                  lastValidValue: _lastValidDuration),
               const SizedBox(height: 20),
               Text(
                 _result,
@@ -146,7 +160,7 @@ class _LoanFormState extends State<LoanForm> {
                 height: 200,
                 child: _buildBarChart(),
               ),
-              const SizedBox(height: 16),
+              //const SizedBox(height: 5),
               const Center(
                 child: Text(
                   'Month',
@@ -198,59 +212,55 @@ class _LoanFormState extends State<LoanForm> {
     );
   }
 
-  Widget _buildTextField(
-      TextEditingController controller, String label, String validationMessage,
+  Widget _buildTextFieldWithInstruction(TextEditingController controller,
+      String label, String validationMessage, String instruction,
       {bool readOnly = false,
       double? min,
       double? max,
       required String lastValidValue}) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(),
-      ),
-      keyboardType: TextInputType.number,
-      readOnly: readOnly,
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly
-      ], // Limit input to numbers only
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return validationMessage;
-        }
-        final doubleValue = double.tryParse(value);
-        if (doubleValue == null) {
-          return 'Please enter a valid number in range $min - $max';
-        }
-        if (min != null && doubleValue < min) {
-          return 'Value must be at least $min';
-        }
-        if (max != null && doubleValue > max) {
-          return 'Value must be at most $max';
-        }
-        return null;
-      },
-      onChanged: (value) {
-        final doubleValue = double.tryParse(value);
-        if (doubleValue != null) {
-          if ((min != null && doubleValue < min) ||
-              (max != null && doubleValue > max)) {
-            setState(() {
-              controller.text =
-                  lastValidValue; // Revert to the last valid value
-              controller.selection = TextSelection.fromPosition(TextPosition(
-                  offset: controller.text.length)); // Move cursor to the end
-            });
-          } else {
-            if (controller == _principalController) {
-              _lastValidPrincipal = value;
-            } else if (controller == _durationController) {
-              _lastValidDuration = value;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: label,
+            border: OutlineInputBorder(),
+          ),
+          keyboardType: TextInputType.number,
+          readOnly: readOnly,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly
+          ], // Limit input to numbers only
+          onChanged: (value) {
+            final doubleValue = double.tryParse(value);
+            if (doubleValue != null) {
+              if ((min != null && doubleValue < min) ||
+                  (max != null && doubleValue > max)) {
+                setState(() {
+                  controller.text =
+                      lastValidValue; // Revert to the last valid value
+                  controller.selection = TextSelection.fromPosition(
+                      TextPosition(
+                          offset: controller
+                              .text.length)); // Move cursor to the end
+                });
+              } else {
+                if (controller == _principalController) {
+                  _lastValidPrincipal = value;
+                } else if (controller == _durationController) {
+                  _lastValidDuration = value;
+                }
+              }
             }
-          }
-        }
-      },
+          },
+        ),
+        const SizedBox(height: 4),
+        Text(
+          instruction,
+          style: const TextStyle(color: Colors.grey, fontSize: 12),
+        ),
+      ],
     );
   }
 
@@ -321,6 +331,7 @@ class _LoanFormState extends State<LoanForm> {
                 );
               },
               reservedSize: 40,
+              interval: 1, // Show every label
             ),
           ),
         ),

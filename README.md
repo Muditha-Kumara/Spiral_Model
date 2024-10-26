@@ -1,9 +1,15 @@
 # Spiral_Model
 
-## Phase 1 Release
+## Phase 2 development
 
-You can open Version one with
+### Overview
+The Spiral Model project is currently in its first phase of release. Below you will find links to access the development site for Phase Two and the APK download for Phase One.
 
-[http://spiral23p.s3-website-us-east-1.amazonaws.com/](http://spiral23p.s3-website-us-east-1.amazonaws.com/)
+### Phase Two Development
+You can access the Phase Two development site using the following links:
+- [S3 Website](http://spiral23p.s3-website-us-east-1.amazonaws.com/)
+- [CloudFront Distribution](https://d27ugj9cn70ngr.cloudfront.net)
 
-download the APK for Phase 1 from build/app/outputs/flutter-apk/app-release.apk
+### Phase One APK Download
+To download the APK for Phase One, please use the following path:
+- `build/app/outputs/flutter-apk/app-release.apk`
