@@ -34,36 +34,31 @@ class _LoanFormState extends State<LoanForm> {
   double _currentOutstandingBalance = 0.0;
   List<double> _balanceByMonth = [];
 
+  // Define a variable for the width of the radio buttons
+  final double radioButtonWidth = 170.0;
+
   void _calculateInterest() {
     if (_formKey.currentState!.validate()) {
       final principal = double.parse(_principalController.text);
       final rate = double.parse(_rateController.text);
       final duration = int.parse(_durationController.text);
 
-      final calculator = Provider.of<InterestCalculator>(context, listen: false);
-      final simpleInterest = calculator.calculateSimpleInterest(principal, rate, duration);
-      final compoundInterest = calculator.calculateCompoundInterest(principal, rate, duration, 1); // yearly compounding
+      final calculator =
+          Provider.of<InterestCalculator>(context, listen: false);
+      final simpleInterest =
+          calculator.calculateSimpleInterest(principal, rate, duration);
+      final compoundInterest = calculator.calculateCompoundInterest(
+          principal, rate, duration, 1); // yearly compounding
 
       setState(() {
         _result = 'Simple Interest: \$${simpleInterest.toStringAsFixed(2)}\n'
-                  'Compound Interest: \$${compoundInterest.toStringAsFixed(2)}';
-        _currentOutstandingBalance = principal + compoundInterest; // Example calculation
-        _balanceByMonth = calculator.calculateBalanceByMonth(principal, rate, duration, 1); // Calculate balance by month
+            'Compound Interest: \$${compoundInterest.toStringAsFixed(2)}';
+        _currentOutstandingBalance =
+            principal + compoundInterest; // Example calculation
+        _balanceByMonth = calculator.calculateBalanceByMonth(
+            principal, rate, duration, 1); // Calculate balance by month
       });
     }
-  }
-
-  Widget _buildTitle(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Colors.grey,
-      fontWeight: FontWeight.bold,
-      fontSize: 14,
-    );
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      space: 4,
-      child: Text(value.toString(), style: style),
-    );
   }
 
   @override
@@ -77,9 +72,12 @@ class _LoanFormState extends State<LoanForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Loan Type:', style: TextStyle(fontSize: 16)),
-              Row(
+              Wrap(
+                spacing: 8.0, // Space between items
+                runSpacing: 4.0, // Space between lines
                 children: [
-                  Expanded(
+                  SizedBox(
+                    width: radioButtonWidth,
                     child: RadioListTile<String>(
                       title: const Text('Personal'),
                       value: 'Personal',
@@ -91,7 +89,8 @@ class _LoanFormState extends State<LoanForm> {
                       },
                     ),
                   ),
-                  Expanded(
+                  SizedBox(
+                    width: radioButtonWidth,
                     child: RadioListTile<String>(
                       title: const Text('Auto'),
                       value: 'Auto',
@@ -103,10 +102,37 @@ class _LoanFormState extends State<LoanForm> {
                       },
                     ),
                   ),
-                  Expanded(
+                  SizedBox(
+                    width: radioButtonWidth,
                     child: RadioListTile<String>(
                       title: const Text('Mortgage'),
                       value: 'Mortgage',
+                      groupValue: _loanType,
+                      onChanged: (String? value) {
+                        setState(() {
+                          _loanType = value!;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: radioButtonWidth,
+                    child: RadioListTile<String>(
+                      title: const Text('Student'),
+                      value: 'Student',
+                      groupValue: _loanType,
+                      onChanged: (String? value) {
+                        setState(() {
+                          _loanType = value!;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: radioButtonWidth,
+                    child: RadioListTile<String>(
+                      title: const Text('Business'),
+                      value: 'Business',
                       groupValue: _loanType,
                       onChanged: (String? value) {
                         setState(() {
@@ -174,7 +200,6 @@ class _LoanFormState extends State<LoanForm> {
                 _result,
                 style: const TextStyle(fontSize: 16),
               ),
-              const SizedBox(height: 10),
               const Text('Current outstanding balance:'),
               Text('\$${_currentOutstandingBalance.toStringAsFixed(2)}'),
               Container(
@@ -188,8 +213,8 @@ class _LoanFormState extends State<LoanForm> {
                               x: entry.key,
                               barRods: [
                                 BarChartRodData(
-                                  toY: entry.value, // Provide the required toY parameter
-                                  color: Colors.blue, // Use color instead of colors
+                                  toY: entry.value,
+                                  color: Colors.blue,
                                 ),
                               ],
                             ))
@@ -197,15 +222,37 @@ class _LoanFormState extends State<LoanForm> {
                     titlesData: FlTitlesData(
                       leftTitles: AxisTitles(
                         sideTitles: SideTitles(
-                          showTitles: false,
-                          getTitlesWidget: _buildTitle, // Use getTitlesWidget instead of getTextStyles
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            const style = TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            );
+                            return SideTitleWidget(
+                              axisSide: meta.axisSide,
+                              space: 4,
+                              child: Text(value.toString(), style: style),
+                            );
+                          },
                           reservedSize: 40,
                         ),
                       ),
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
-                          getTitlesWidget: _buildTitle, // Use getTitlesWidget instead of getTextStyles
+                          getTitlesWidget: (value, meta) {
+                            const style = TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            );
+                            return SideTitleWidget(
+                              axisSide: meta.axisSide,
+                              space: 4,
+                              child: Text(value.toString(), style: style),
+                            );
+                          },
                           reservedSize: 40,
                         ),
                       ),
