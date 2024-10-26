@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:math';
 import '../services/interest_calculator.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -34,7 +35,8 @@ class _LoanFormState extends State<LoanForm> {
   String _loanType = 'Personal';
   String _result = '';
   double _currentOutstandingBalance = 0.0;
-  List<double> _balanceByMonth = [];
+  List<double> _simpleInterestByMonth = [];
+  List<double> _compoundInterestByMonth = [];
   Map<String, double> _interestRates = {};
 
   // Define a variable for the width of the radio buttons
@@ -93,8 +95,11 @@ class _LoanFormState extends State<LoanForm> {
             'Compound Interest: \$${compoundInterest.toStringAsFixed(2)}';
         _currentOutstandingBalance =
             principal + compoundInterest; // Example calculation
-        _balanceByMonth = calculator.calculateBalanceByMonth(
-            principal, rate, duration, 1); // Calculate balance by month
+        _simpleInterestByMonth = calculator.calculateBalanceByMonth(principal,
+            rate, duration, 1); // Calculate simple interest balance by month
+        _compoundInterestByMonth = calculator.calculateBalanceByMonth(
+            principal, rate, duration, 1,
+            compound: true); // Calculate compound interest balance by month
       });
     }
   }
@@ -110,137 +115,17 @@ class _LoanFormState extends State<LoanForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Loan Type:', style: TextStyle(fontSize: 16)),
-              Wrap(
-                spacing: 8.0, // Space between items
-                runSpacing: 4.0, // Space between lines
-                children: [
-                  SizedBox(
-                    width: radioButtonWidth,
-                    child: RadioListTile<String>(
-                      title: Text(
-                          'Personal (${_interestRates['Personal']?.toStringAsFixed(1) ?? '...'}%)'),
-                      value: 'Personal',
-                      groupValue: _loanType,
-                      onChanged: (String? value) {
-                        setState(() {
-                          _loanType = value!;
-                          _rateController.text =
-                              _interestRates[_loanType]?.toStringAsFixed(1) ??
-                                  '';
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: radioButtonWidth,
-                    child: RadioListTile<String>(
-                      title: Text(
-                          'Auto (${_interestRates['Auto']?.toStringAsFixed(1) ?? '...'}%)'),
-                      value: 'Auto',
-                      groupValue: _loanType,
-                      onChanged: (String? value) {
-                        setState(() {
-                          _loanType = value!;
-                          _rateController.text =
-                              _interestRates[_loanType]?.toStringAsFixed(1) ??
-                                  '';
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: radioButtonWidth,
-                    child: RadioListTile<String>(
-                      title: Text(
-                          'Mortgage (${_interestRates['Mortgage']?.toStringAsFixed(1) ?? '...'}%)'),
-                      value: 'Mortgage',
-                      groupValue: _loanType,
-                      onChanged: (String? value) {
-                        setState(() {
-                          _loanType = value!;
-                          _rateController.text =
-                              _interestRates[_loanType]?.toStringAsFixed(1) ??
-                                  '';
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: radioButtonWidth,
-                    child: RadioListTile<String>(
-                      title: Text(
-                          'Student (${_interestRates['Student']?.toStringAsFixed(1) ?? '...'}%)'),
-                      value: 'Student',
-                      groupValue: _loanType,
-                      onChanged: (String? value) {
-                        setState(() {
-                          _loanType = value!;
-                          _rateController.text =
-                              _interestRates[_loanType]?.toStringAsFixed(1) ??
-                                  '';
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: radioButtonWidth,
-                    child: RadioListTile<String>(
-                      title: Text(
-                          'Business (${_interestRates['Business']?.toStringAsFixed(1) ?? '...'}%)'),
-                      value: 'Business',
-                      groupValue: _loanType,
-                      onChanged: (String? value) {
-                        setState(() {
-                          _loanType = value!;
-                          _rateController.text =
-                              _interestRates[_loanType]?.toStringAsFixed(1) ??
-                                  '';
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
+              _buildLoanTypeRadioButtons(),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _principalController,
-                decoration: const InputDecoration(
-                  labelText: 'Principal',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the principal amount';
-                  }
-                  return null;
-                },
-              ),
+              _buildTextField(_principalController, 'Principal',
+                  'Please enter the principal amount'),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _rateController,
-                decoration: const InputDecoration(
-                  labelText: 'Interest Rate (%)',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                readOnly: true, // Disable direct input
-              ),
+              _buildTextField(_rateController, 'Interest Rate (%)',
+                  'Please enter the interest rate',
+                  readOnly: true),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _durationController,
-                decoration: const InputDecoration(
-                  labelText: 'Duration (years)',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the duration';
-                  }
-                  return null;
-                },
-              ),
+              _buildTextField(_durationController, 'Duration (years)',
+                  'Please enter the duration'),
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
@@ -248,73 +133,157 @@ class _LoanFormState extends State<LoanForm> {
                   child: const Text('Calculate'),
                 ),
               ),
-              //const SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 _result,
                 style: const TextStyle(fontSize: 16),
               ),
-              const Text('Current outstanding balance:'),
-              Text('\$${_currentOutstandingBalance.toStringAsFixed(2)}'),
+              //const Text('Current outstanding balance:'),
+              //Text('\$${_currentOutstandingBalance.toStringAsFixed(2)}'),
               const SizedBox(height: 20),
               Container(
                 height: 200,
-                child: BarChart(
-                  BarChartData(
-                    barGroups: _balanceByMonth
-                        .asMap()
-                        .entries
-                        .map((entry) => BarChartGroupData(
-                              x: entry.key,
-                              barRods: [
-                                BarChartRodData(
-                                  toY: entry.value,
-                                  color: Colors.blue,
-                                ),
-                              ],
-                            ))
-                        .toList(),
-                    titlesData: FlTitlesData(
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: false,
-                          getTitlesWidget: (value, meta) {
-                            const style = TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            );
-                            return SideTitleWidget(
-                              axisSide: meta.axisSide,
-                              space: 4,
-                              child: Text(value.toString(), style: style),
-                            );
-                          },
-                          reservedSize: 40,
-                        ),
-                      ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: false,
-                          getTitlesWidget: (value, meta) {
-                            const style = TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            );
-                            return SideTitleWidget(
-                              axisSide: meta.axisSide,
-                              space: 4,
-                              child: Text(value.toString(), style: style),
-                            );
-                          },
-                          reservedSize: 40,
-                        ),
-                      ),
-                    ),
+                child: _buildBarChart(),
+              ),
+              const SizedBox(height: 16),
+              const Center(
+                child: Text(
+                  'Month',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoanTypeRadioButtons() {
+    return Wrap(
+      spacing: 8.0, // Space between items
+      runSpacing: 4.0, // Space between lines
+      children: [
+        _buildRadioButton('Personal'),
+        _buildRadioButton('Auto'),
+        _buildRadioButton('Mortgage'),
+        _buildRadioButton('Student'),
+        _buildRadioButton('Business'),
+      ],
+    );
+  }
+
+  Widget _buildRadioButton(String loanType) {
+    return SizedBox(
+      width: radioButtonWidth,
+      child: RadioListTile<String>(
+        title: Text(
+            '$loanType (${_interestRates[loanType]?.toStringAsFixed(1) ?? '...'}%)'),
+        value: loanType,
+        groupValue: _loanType,
+        onChanged: (String? value) {
+          setState(() {
+            _loanType = value!;
+            _rateController.text =
+                _interestRates[_loanType]?.toStringAsFixed(1) ?? '';
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildTextField(
+      TextEditingController controller, String label, String validationMessage,
+      {bool readOnly = false}) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(),
+      ),
+      keyboardType: TextInputType.number,
+      readOnly: readOnly,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return validationMessage;
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildBarChart() {
+    return BarChart(
+      BarChartData(
+        barGroups: List.generate(_simpleInterestByMonth.length, (index) {
+          return BarChartGroupData(
+            x: index,
+            barRods: [
+              BarChartRodData(
+                toY: _simpleInterestByMonth[index],
+                color: Colors.blue,
+                width: 8,
+              ),
+              BarChartRodData(
+                toY: _compoundInterestByMonth[index],
+                color: Colors.red,
+                width: 8,
+              ),
+            ],
+            barsSpace: 4,
+          );
+        }),
+        titlesData: FlTitlesData(
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                const style = TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                );
+                return SideTitleWidget(
+                  axisSide: meta.axisSide,
+                  space: 4,
+                  child: Text(value.toStringAsFixed(1), style: style),
+                );
+              },
+              reservedSize: 60, // Increase reserved size to prevent wrapping
+            ),
+          ),
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: false,
+            ),
+          ),
+          topTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: false,
+            ),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                const style = TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                );
+                return SideTitleWidget(
+                  axisSide: meta.axisSide,
+                  space: 4,
+                  child: Text(value.toInt().toString(),
+                      style: style), // Remove decimal values
+                );
+              },
+              reservedSize: 40,
+            ),
           ),
         ),
       ),
