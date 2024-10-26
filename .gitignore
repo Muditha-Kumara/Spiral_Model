@@ -7,6 +7,7 @@ build/*
 !build/web
 !build/web/**
 !build/app/outputs/flutter-apk/app-release.apk
+!build/flutter_assets/FontManifest.json
 
 # If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
