@@ -12,3 +12,17 @@
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/flutter/CMakeFiles/rebuild_cache.dir
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/flutter/CMakeFiles/edit_cache.dir
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/flutter/CMakeFiles/flutter_assemble.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/screen_retriever/CMakeFiles/install/strip.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/screen_retriever/CMakeFiles/install/local.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/screen_retriever/CMakeFiles/install.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/screen_retriever/CMakeFiles/list_install_components.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/screen_retriever/CMakeFiles/rebuild_cache.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/screen_retriever/CMakeFiles/edit_cache.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/screen_retriever/CMakeFiles/screen_retriever_plugin.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/window_manager/CMakeFiles/install/strip.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/window_manager/CMakeFiles/install/local.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/window_manager/CMakeFiles/install.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/window_manager/CMakeFiles/list_install_components.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/window_manager/CMakeFiles/rebuild_cache.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/window_manager/CMakeFiles/edit_cache.dir
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/window_manager/CMakeFiles/window_manager_plugin.dir

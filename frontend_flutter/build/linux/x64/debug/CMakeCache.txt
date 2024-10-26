@@ -238,6 +238,18 @@ runner_BINARY_DIR:STATIC=/home/muditha/Spiral_Model/frontend_flutter/build/linux
 //Value Computed by CMake
 runner_SOURCE_DIR:STATIC=/home/muditha/Spiral_Model/frontend_flutter/linux
 
+//Value Computed by CMake
+screen_retriever_BINARY_DIR:STATIC=/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/screen_retriever
+
+//Value Computed by CMake
+screen_retriever_SOURCE_DIR:STATIC=/home/muditha/Spiral_Model/frontend_flutter/linux/flutter/ephemeral/.plugin_symlinks/screen_retriever/linux
+
+//Value Computed by CMake
+window_manager_BINARY_DIR:STATIC=/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/plugins/window_manager
+
+//Value Computed by CMake
+window_manager_SOURCE_DIR:STATIC=/home/muditha/Spiral_Model/frontend_flutter/linux/flutter/ephemeral/.plugin_symlinks/window_manager/linux
+
 
 ########################
 # INTERNAL cache entries
@@ -325,7 +337,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=2
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=4
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
