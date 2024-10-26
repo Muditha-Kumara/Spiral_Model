@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../services/interest_calculator.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -33,14 +35,50 @@ class _LoanFormState extends State<LoanForm> {
   String _result = '';
   double _currentOutstandingBalance = 0.0;
   List<double> _balanceByMonth = [];
+  Map<String, double> _interestRates = {};
 
   // Define a variable for the width of the radio buttons
   final double radioButtonWidth = 170.0;
 
+  @override
+  void initState() {
+    super.initState();
+    _fetchInterestRates();
+  }
+
+  Future<void> _fetchInterestRates() async {
+    try {
+      final response = await http.get(Uri.parse(
+          'https://gxdjvk1avb.execute-api.us-east-1.amazonaws.com/devInterst'));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        final Map<String, dynamic> interestRates = json.decode(data['body']);
+        print('API Response: $interestRates'); // Debugging line
+        setState(() {
+          _interestRates = interestRates.map((key, value) => MapEntry(
+              key,
+              (value is num)
+                  ? value.toDouble()
+                  : double.tryParse(value.toString()) ?? 0.0));
+          _rateController.text =
+              _interestRates[_loanType]?.toStringAsFixed(1) ?? '';
+        });
+        print('Fetched interest rates: $_interestRates'); // Debugging line
+      } else {
+        // Handle error
+        print('Failed to load interest rates: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle error
+      print('Error fetching interest rates: $e');
+    }
+  }
+
   void _calculateInterest() {
     if (_formKey.currentState!.validate()) {
       final principal = double.parse(_principalController.text);
-      final rate = double.parse(_rateController.text);
+      final rate = _interestRates[_loanType] ?? 0.0;
       final duration = int.parse(_durationController.text);
 
       final calculator =
@@ -79,12 +117,16 @@ class _LoanFormState extends State<LoanForm> {
                   SizedBox(
                     width: radioButtonWidth,
                     child: RadioListTile<String>(
-                      title: const Text('Personal'),
+                      title: Text(
+                          'Personal (${_interestRates['Personal']?.toStringAsFixed(1) ?? '...'}%)'),
                       value: 'Personal',
                       groupValue: _loanType,
                       onChanged: (String? value) {
                         setState(() {
                           _loanType = value!;
+                          _rateController.text =
+                              _interestRates[_loanType]?.toStringAsFixed(1) ??
+                                  '';
                         });
                       },
                     ),
@@ -92,12 +134,16 @@ class _LoanFormState extends State<LoanForm> {
                   SizedBox(
                     width: radioButtonWidth,
                     child: RadioListTile<String>(
-                      title: const Text('Auto'),
+                      title: Text(
+                          'Auto (${_interestRates['Auto']?.toStringAsFixed(1) ?? '...'}%)'),
                       value: 'Auto',
                       groupValue: _loanType,
                       onChanged: (String? value) {
                         setState(() {
                           _loanType = value!;
+                          _rateController.text =
+                              _interestRates[_loanType]?.toStringAsFixed(1) ??
+                                  '';
                         });
                       },
                     ),
@@ -105,12 +151,16 @@ class _LoanFormState extends State<LoanForm> {
                   SizedBox(
                     width: radioButtonWidth,
                     child: RadioListTile<String>(
-                      title: const Text('Mortgage'),
+                      title: Text(
+                          'Mortgage (${_interestRates['Mortgage']?.toStringAsFixed(1) ?? '...'}%)'),
                       value: 'Mortgage',
                       groupValue: _loanType,
                       onChanged: (String? value) {
                         setState(() {
                           _loanType = value!;
+                          _rateController.text =
+                              _interestRates[_loanType]?.toStringAsFixed(1) ??
+                                  '';
                         });
                       },
                     ),
@@ -118,12 +168,16 @@ class _LoanFormState extends State<LoanForm> {
                   SizedBox(
                     width: radioButtonWidth,
                     child: RadioListTile<String>(
-                      title: const Text('Student'),
+                      title: Text(
+                          'Student (${_interestRates['Student']?.toStringAsFixed(1) ?? '...'}%)'),
                       value: 'Student',
                       groupValue: _loanType,
                       onChanged: (String? value) {
                         setState(() {
                           _loanType = value!;
+                          _rateController.text =
+                              _interestRates[_loanType]?.toStringAsFixed(1) ??
+                                  '';
                         });
                       },
                     ),
@@ -131,12 +185,16 @@ class _LoanFormState extends State<LoanForm> {
                   SizedBox(
                     width: radioButtonWidth,
                     child: RadioListTile<String>(
-                      title: const Text('Business'),
+                      title: Text(
+                          'Business (${_interestRates['Business']?.toStringAsFixed(1) ?? '...'}%)'),
                       value: 'Business',
                       groupValue: _loanType,
                       onChanged: (String? value) {
                         setState(() {
                           _loanType = value!;
+                          _rateController.text =
+                              _interestRates[_loanType]?.toStringAsFixed(1) ??
+                                  '';
                         });
                       },
                     ),
@@ -166,12 +224,7 @@ class _LoanFormState extends State<LoanForm> {
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the interest rate';
-                  }
-                  return null;
-                },
+                readOnly: true, // Disable direct input
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -195,13 +248,14 @@ class _LoanFormState extends State<LoanForm> {
                   child: const Text('Calculate'),
                 ),
               ),
-              const SizedBox(height: 20),
+              //const SizedBox(height: 20),
               Text(
                 _result,
                 style: const TextStyle(fontSize: 16),
               ),
               const Text('Current outstanding balance:'),
               Text('\$${_currentOutstandingBalance.toStringAsFixed(2)}'),
+              const SizedBox(height: 20),
               Container(
                 height: 200,
                 child: BarChart(
@@ -222,7 +276,7 @@ class _LoanFormState extends State<LoanForm> {
                     titlesData: FlTitlesData(
                       leftTitles: AxisTitles(
                         sideTitles: SideTitles(
-                          showTitles: true,
+                          showTitles: false,
                           getTitlesWidget: (value, meta) {
                             const style = TextStyle(
                               color: Colors.grey,
@@ -240,7 +294,7 @@ class _LoanFormState extends State<LoanForm> {
                       ),
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
-                          showTitles: true,
+                          showTitles: false,
                           getTitlesWidget: (value, meta) {
                             const style = TextStyle(
                               color: Colors.grey,
