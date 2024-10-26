@@ -174,6 +174,7 @@ class _LoanFormState extends State<LoanForm> {
                 _result,
                 style: const TextStyle(fontSize: 16),
               ),
+              const SizedBox(height: 10),
               const Text('Current outstanding balance:'),
               Text('\$${_currentOutstandingBalance.toStringAsFixed(2)}'),
               Container(
@@ -196,7 +197,7 @@ class _LoanFormState extends State<LoanForm> {
                     titlesData: FlTitlesData(
                       leftTitles: AxisTitles(
                         sideTitles: SideTitles(
-                          showTitles: true,
+                          showTitles: false,
                           getTitlesWidget: _buildTitle, // Use getTitlesWidget instead of getTextStyles
                           reservedSize: 40,
                         ),
