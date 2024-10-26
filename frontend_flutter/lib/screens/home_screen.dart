@@ -33,12 +33,14 @@ class _LoanFormState extends State<LoanForm> {
   final _principalController = TextEditingController();
   final _rateController = TextEditingController();
   final _durationController = TextEditingController();
-  String _loanType = 'Personal';
+  String? _loanType; // Set initial value to null
   String _result = '';
   double _currentOutstandingBalance = 0.0;
   List<double> _simpleInterestByMonth = [];
   List<double> _compoundInterestByMonth = [];
   Map<String, double> _interestRates = {};
+  String _lastValidPrincipal = ''; // Store the last valid principal value
+  String _lastValidDuration = ''; // Store the last valid duration value
 
   // Define a variable for the width of the radio buttons
   final double radioButtonWidth = 170.0;
@@ -47,6 +49,9 @@ class _LoanFormState extends State<LoanForm> {
   void initState() {
     super.initState();
     _fetchInterestRates();
+    _principalController.addListener(_calculateInterest);
+    _rateController.addListener(_calculateInterest);
+    _durationController.addListener(_calculateInterest);
   }
 
   Future<void> _fetchInterestRates() async {
@@ -64,8 +69,6 @@ class _LoanFormState extends State<LoanForm> {
               (value is num)
                   ? value.toDouble()
                   : double.tryParse(value.toString()) ?? 0.0));
-          _rateController.text =
-              _interestRates[_loanType]?.toStringAsFixed(1) ?? '';
         });
         print('Fetched interest rates: $_interestRates'); // Debugging line
       } else {
@@ -79,10 +82,10 @@ class _LoanFormState extends State<LoanForm> {
   }
 
   void _calculateInterest() {
-    if (_formKey.currentState!.validate()) {
-      final principal = double.parse(_principalController.text);
-      final rate = _interestRates[_loanType] ?? 0.0;
-      final duration = int.parse(_durationController.text);
+    if (_formKey.currentState!.validate() && _loanType != null) {
+      final principal = double.tryParse(_principalController.text) ?? 0.0;
+      final rate = _interestRates[_loanType!] ?? 0.0;
+      final duration = int.tryParse(_durationController.text) ?? 0;
 
       final calculator =
           Provider.of<InterestCalculator>(context, listen: false);
@@ -112,6 +115,8 @@ class _LoanFormState extends State<LoanForm> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
+          autovalidateMode:
+              AutovalidateMode.onUserInteraction, // Enable real-time validation
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -119,28 +124,23 @@ class _LoanFormState extends State<LoanForm> {
               _buildLoanTypeRadioButtons(),
               const SizedBox(height: 16),
               _buildTextField(_principalController, 'Principal',
-                  'Please enter the principal amount'),
+                  'Please enter the principal amount in range 1 - 10000',
+                  min: 1, max: 10000, lastValidValue: _lastValidPrincipal),
               const SizedBox(height: 16),
               _buildTextField(_rateController, 'Interest Rate (%)',
-                  'Please enter the interest rate',
-                  readOnly: true),
+                  'Please select a loan type to populate the rate',
+                  readOnly: true, lastValidValue: "Select a loan type"),
               const SizedBox(height: 16),
               _buildTextField(_durationController, 'Duration (years)',
-                  'Please enter the duration'),
-              const SizedBox(height: 20),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _calculateInterest,
-                  child: const Text('Calculate'),
-                ),
-              ),
+                  'Please enter the duration in range 1 - 15',
+                  min: 1, max: 15, lastValidValue: _lastValidDuration),
               const SizedBox(height: 20),
               Text(
                 _result,
                 style: const TextStyle(fontSize: 16),
               ),
               // const Text('Current outstanding balance:'),
-              //Text('\$${_currentOutstandingBalance.toStringAsFixed(2)}'),
+              // Text('\$${_currentOutstandingBalance.toStringAsFixed(2)}'),
               const SizedBox(height: 20),
               Container(
                 height: 200,
@@ -191,6 +191,7 @@ class _LoanFormState extends State<LoanForm> {
             _loanType = value!;
             _rateController.text =
                 _interestRates[_loanType]?.toStringAsFixed(1) ?? '';
+            _calculateInterest(); // Trigger calculation when loan type changes
           });
         },
       ),
@@ -199,7 +200,10 @@ class _LoanFormState extends State<LoanForm> {
 
   Widget _buildTextField(
       TextEditingController controller, String label, String validationMessage,
-      {bool readOnly = false}) {
+      {bool readOnly = false,
+      double? min,
+      double? max,
+      required String lastValidValue}) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
@@ -215,7 +219,37 @@ class _LoanFormState extends State<LoanForm> {
         if (value == null || value.isEmpty) {
           return validationMessage;
         }
+        final doubleValue = double.tryParse(value);
+        if (doubleValue == null) {
+          return 'Please enter a valid number in range $min - $max';
+        }
+        if (min != null && doubleValue < min) {
+          return 'Value must be at least $min';
+        }
+        if (max != null && doubleValue > max) {
+          return 'Value must be at most $max';
+        }
         return null;
+      },
+      onChanged: (value) {
+        final doubleValue = double.tryParse(value);
+        if (doubleValue != null) {
+          if ((min != null && doubleValue < min) ||
+              (max != null && doubleValue > max)) {
+            setState(() {
+              controller.text =
+                  lastValidValue; // Revert to the last valid value
+              controller.selection = TextSelection.fromPosition(TextPosition(
+                  offset: controller.text.length)); // Move cursor to the end
+            });
+          } else {
+            if (controller == _principalController) {
+              _lastValidPrincipal = value;
+            } else if (controller == _durationController) {
+              _lastValidDuration = value;
+            }
+          }
+        }
       },
     );
   }
@@ -292,7 +326,7 @@ class _LoanFormState extends State<LoanForm> {
         ),
         barTouchData: BarTouchData(
           touchTooltipData: BarTouchTooltipData(
-            // tooltipBgColor: Colors.blueGrey,
+            // tooltipBackgroundColor: Colors.blueGrey,
             tooltipPadding: const EdgeInsets.all(8),
             tooltipMargin: 8,
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
