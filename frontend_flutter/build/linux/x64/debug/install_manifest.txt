@@ -3,6 +3,7 @@
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/bundle/lib/libflutter_linux_gtk.so
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/bundle/lib/libscreen_retriever_plugin.so
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/bundle/lib/libwindow_manager_plugin.so
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/bundle/data/flutter_assets/packages/window_manager/images/ic_chrome_minimize.png
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/bundle/data/flutter_assets/packages/window_manager/images/ic_chrome_maximize.png
@@ -15,4 +16,5 @@
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/bundle/data/flutter_assets/shaders/ink_sparkle.frag
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.json
+/home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin.json
 /home/muditha/Spiral_Model/frontend_flutter/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin

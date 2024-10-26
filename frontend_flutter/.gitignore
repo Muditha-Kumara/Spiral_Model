@@ -29,7 +29,12 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-#/build/
+/build/
+!/build/linux/x64/release/bundle
+!/build/web/
+#!/build/app/outputs/flutter-apk/app-release.apk
+#!/build/ios/Release-iphoneos/
+#!/build/windows/x64/Release/
 
 # Symbolication related
 app.*.symbols
