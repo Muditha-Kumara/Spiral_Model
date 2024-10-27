@@ -26,10 +26,10 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/mudit
 		INJECTED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml
 		ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:4:9-42
 manifest
-ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:1:1-45:12
-INJECTED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:1:1-45:12
-INJECTED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:1:1-45:12
-INJECTED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:1:1-45:12
+ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:1:1-46:12
+INJECTED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:1:1-46:12
+INJECTED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:1:1-46:12
+INJECTED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:1:1-46:12
 MERGED from [androidx.fragment:fragment:1.7.1] /home/muditha/.gradle/caches/transforms-3/a49cd171355a6a39687e69f028c8bcbc/transformed/fragment-1.7.1/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.window:window:1.2.0] /home/muditha/.gradle/caches/transforms-3/3e108fe9d597d03770ae82acaebb5b63/transformed/jetified-window-1.2.0/AndroidManifest.xml:17:1-31:12
 MERGED from [androidx.window:window-java:1.2.0] /home/muditha/.gradle/caches/transforms-3/bf78d940cc78ca45c77421e3af64376e/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:17:1-21:12
@@ -63,18 +63,22 @@ MERGED from [androidx.window.extensions.core:core:1.0.0] /home/muditha/.gradle/c
 		INJECTED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:1:11-69
-queries
-ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:39:5-44:15
-intent#action:name:android.intent.action.PROCESS_TEXT+data:mimeType:text/plain
-ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:40:9-43:18
-action#android.intent.action.PROCESS_TEXT
-ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:41:13-72
+uses-permission#android.permission.INTERNET
+ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:34:5-66
 	android:name
-		ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:41:21-70
+		ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:34:22-64
+queries
+ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:40:5-45:15
+intent#action:name:android.intent.action.PROCESS_TEXT+data:mimeType:text/plain
+ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:41:9-44:18
+action#android.intent.action.PROCESS_TEXT
+ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:42:13-72
+	android:name
+		ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:42:21-70
 data
-ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:42:13-50
+ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:43:13-50
 	android:mimeType
-		ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:42:19-48
+		ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:43:19-48
 activity#com.example.frontend_flutter.MainActivity
 ADDED from /home/muditha/Spiral_Model/frontend_flutter/android/app/src/main/AndroidManifest.xml:6:9-27:20
 	android:launchMode

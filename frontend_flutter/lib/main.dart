@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         Provider<InterestCalculator>(create: (_) => InterestCalculator()),
       ],
       child: MaterialApp(
-        title: 'Loan Calculator',
+        title: 'Spiral Model Phase Two Development',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart'; // Import the services package
+import 'package:qr_flutter/qr_flutter.dart'; // Import the qr_flutter package
 import '../services/interest_calculator.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -36,6 +37,7 @@ class _LoanFormState extends State<LoanForm> {
   final _durationController = TextEditingController();
   String? _loanType; // Set initial value to null
   String _result = '';
+  String _errorMessage = ''; // Error message
   double _currentOutstandingBalance = 0.0;
   List<double> _simpleInterestByMonth = [];
   List<double> _compoundInterestByMonth = [];
@@ -70,14 +72,22 @@ class _LoanFormState extends State<LoanForm> {
               (value is num)
                   ? value.toDouble()
                   : double.tryParse(value.toString()) ?? 0.0));
+          _errorMessage = ''; // Clear any previous error message
         });
         print('Fetched interest rates: $_interestRates'); // Debugging line
       } else {
         // Handle error
+        setState(() {
+          _errorMessage =
+              'Failed to load interest rates: ${response.statusCode}';
+        });
         print('Failed to load interest rates: ${response.statusCode}');
       }
     } catch (e) {
       // Handle error
+      setState(() {
+        _errorMessage = 'Error fetching interest rates: $e';
+      });
       print('Error fetching interest rates: $e');
     }
   }
@@ -116,6 +126,7 @@ class _LoanFormState extends State<LoanForm> {
       _durationController.clear();
       _loanType = null;
       _result = '';
+      _errorMessage = ''; // Clear any previous error message
       _currentOutstandingBalance = 0.0;
       _simpleInterestByMonth = [];
       _compoundInterestByMonth = [];
@@ -156,7 +167,7 @@ class _LoanFormState extends State<LoanForm> {
                   _rateController,
                   'Interest Rate (%)',
                   'Please enter the interest rate',
-                  'This field is read-only. Select a loan type to change the rate',
+                  'This field is read-only',
                   readOnly: true,
                   lastValidValue: ''), // No validation needed
               const SizedBox(height: 16),
@@ -164,9 +175,9 @@ class _LoanFormState extends State<LoanForm> {
                   _durationController,
                   'Duration (years)',
                   'Please enter the duration',
-                  'Enter a years between 1 and 5',
+                  'Enter a value between 1 and 10',
                   min: 1,
-                  max: 5,
+                  max: 10,
                   lastValidValue: _lastValidDuration),
               const SizedBox(height: 16),
               Center(
@@ -188,12 +199,18 @@ class _LoanFormState extends State<LoanForm> {
                 ),
               ),
               const SizedBox(height: 20),
+              if (_errorMessage.isNotEmpty)
+                Center(
+                  child: Text(
+                    _errorMessage,
+                    style: const TextStyle(color: Colors.red, fontSize: 16),
+                  ),
+                ),
+              const SizedBox(height: 20),
               Text(
                 _result,
                 style: const TextStyle(fontSize: 16, color: Colors.lightBlue),
               ),
-              // const Text('Current outstanding balance:'),
-              // Text('\$${_currentOutstandingBalance.toStringAsFixed(2)}'),
               const SizedBox(height: 20),
               Container(
                 height: 200,
@@ -210,6 +227,14 @@ class _LoanFormState extends State<LoanForm> {
                   ),
                 ),
               ),
+              /*   const SizedBox(height: 20),
+              Center(
+                child: QrImage(
+                  data: _result.isNotEmpty ? _result : 'No data available',
+                  version: QrVersions.auto,
+                  size: 200.0,
+                ),
+              ),*/
             ],
           ),
         ),
