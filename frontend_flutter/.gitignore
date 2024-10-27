@@ -30,7 +30,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-!/build/linux/x64/release/bundle
+!/build/linux/x64/release/bundle/
 !/build/web/
 !/build/app/outputs/flutter-apk/app-release.apk
 #!/build/ios/Release-iphoneos/
