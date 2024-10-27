@@ -16,7 +16,7 @@ void main() async {
     await windowManager.ensureInitialized();
 
     WindowOptions windowOptions = const WindowOptions(
-      title: 'Spiral Model Phase One',
+      title: 'Spiral Model Phase Two Development',
     );
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();

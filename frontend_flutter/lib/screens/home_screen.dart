@@ -15,6 +15,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Loan Calculator'),
+        backgroundColor: Colors.lightBlue, // AppBar color
       ),
       body: const LoanForm(),
     );
@@ -108,6 +109,21 @@ class _LoanFormState extends State<LoanForm> {
     }
   }
 
+  void _resetFields() {
+    setState(() {
+      _principalController.clear();
+      _rateController.clear();
+      _durationController.clear();
+      _loanType = null;
+      _result = '';
+      _currentOutstandingBalance = 0.0;
+      _simpleInterestByMonth = [];
+      _compoundInterestByMonth = [];
+      _lastValidPrincipal = '';
+      _lastValidDuration = '';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -120,7 +136,11 @@ class _LoanFormState extends State<LoanForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Loan Type:', style: TextStyle(fontSize: 16)),
+              const Text('Loan Type:',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.lightBlue)),
               _buildLoanTypeRadioButtons(),
               const SizedBox(height: 16),
               _buildTextFieldWithInstruction(
@@ -135,7 +155,7 @@ class _LoanFormState extends State<LoanForm> {
               _buildTextFieldWithInstruction(
                   _rateController,
                   'Interest Rate (%)',
-                  'Please select a loan type',
+                  'Please enter the interest rate',
                   'This field is read-only. Select a loan type to change the rate',
                   readOnly: true,
                   lastValidValue: ''), // No validation needed
@@ -143,15 +163,34 @@ class _LoanFormState extends State<LoanForm> {
               _buildTextFieldWithInstruction(
                   _durationController,
                   'Duration (years)',
-                  'Please enter the duration in years',
-                  'Enter a value between 1 and 10',
+                  'Please enter the duration',
+                  'Enter a years between 1 and 5',
                   min: 1,
-                  max: 10,
+                  max: 5,
                   lastValidValue: _lastValidDuration),
+              const SizedBox(height: 16),
+              Center(
+                child: TextButton(
+                  onPressed: _resetFields,
+                  child: const Text('Reset'),
+                  style: ButtonStyle(
+                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                    backgroundColor:
+                        MaterialStateProperty.all(Colors.lightBlue),
+                    padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    ),
+                    textStyle: MaterialStateProperty.all(
+                      const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
               Text(
                 _result,
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16, color: Colors.lightBlue),
               ),
               // const Text('Current outstanding balance:'),
               // Text('\$${_currentOutstandingBalance.toStringAsFixed(2)}'),
@@ -160,7 +199,7 @@ class _LoanFormState extends State<LoanForm> {
                 height: 200,
                 child: _buildBarChart(),
               ),
-              //const SizedBox(height: 5),
+              const SizedBox(height: 16),
               const Center(
                 child: Text(
                   'Month',
@@ -226,6 +265,10 @@ class _LoanFormState extends State<LoanForm> {
           decoration: InputDecoration(
             labelText: label,
             border: OutlineInputBorder(),
+            labelStyle: const TextStyle(color: Colors.lightBlue),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.lightBlue),
+            ),
           ),
           keyboardType: TextInputType.number,
           readOnly: readOnly,
