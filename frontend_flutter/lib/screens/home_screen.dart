@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart'; // Import the services package
-import 'package:qr_flutter/qr_flutter.dart'; // Import the qr_flutter package
+import 'package:url_launcher/url_launcher.dart'; // Import url_launcher package
 import '../services/interest_calculator.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -17,9 +17,46 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Loan Calculator'),
         backgroundColor: Colors.lightBlue, // AppBar color
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: IconButton(
+              icon: Image.asset('assets/android_icon.png'),
+              iconSize: 30,
+              onPressed: () {
+                // Replace with your actual download URL for the Android app
+                const url =
+                    'https://github.com/Muditha-Kumara/Spiral_Model/releases/tag/v2.0.0';
+                _launchURL(url);
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: IconButton(
+              icon: Image.asset('assets/linux_icon.png'),
+              iconSize: 30,
+              onPressed: () {
+                // Replace with your actual download URL for the Linux app
+                const url =
+                    'https://github.com/Muditha-Kumara/Spiral_Model/releases/tag/v2.0.0';
+                _launchURL(url);
+              },
+            ),
+          ),
+          const SizedBox(width: 16), // Add space from the right margin
+        ],
       ),
       body: const LoanForm(),
     );
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 
@@ -167,7 +204,7 @@ class _LoanFormState extends State<LoanForm> {
                   _rateController,
                   'Interest Rate (%)',
                   'Please enter the interest rate',
-                  'This field is read-only',
+                  'This field is read-only. Please select a loan type.',
                   readOnly: true,
                   lastValidValue: ''), // No validation needed
               const SizedBox(height: 16),
@@ -198,7 +235,7 @@ class _LoanFormState extends State<LoanForm> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               if (_errorMessage.isNotEmpty)
                 Center(
                   child: Text(
@@ -221,20 +258,12 @@ class _LoanFormState extends State<LoanForm> {
                 child: Text(
                   'Month',
                   style: TextStyle(
-                    color: Colors.grey,
+                    color: Color.fromARGB(255, 58, 42, 42),
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
               ),
-              /*   const SizedBox(height: 20),
-              Center(
-                child: QrImage(
-                  data: _result.isNotEmpty ? _result : 'No data available',
-                  version: QrVersions.auto,
-                  size: 200.0,
-                ),
-              ),*/
             ],
           ),
         ),
@@ -326,7 +355,8 @@ class _LoanFormState extends State<LoanForm> {
         const SizedBox(height: 4),
         Text(
           instruction,
-          style: const TextStyle(color: Colors.grey, fontSize: 12),
+          style: const TextStyle(
+              color: Color.fromARGB(255, 51, 40, 40), fontSize: 12),
         ),
       ],
     );

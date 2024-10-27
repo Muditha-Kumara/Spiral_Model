@@ -12,8 +12,8 @@ You can access the Phase Two development site using the following links:
 
 ### Phase Two APK Download
 To download the APK for Phase Two, please use the following path:
-- `build/app/outputs/flutter-apk/app-release.apk`
+- `frontend_flutter/build/app/outputs/flutter-apk/app-release.apk`
 
 ### Phase Two Linux Download
 To download the APK for Phase Two, please use the following path:
-- `/build/linux/x64/release/bundle`
+- `frontend_flutter/build/linux/x64/release/bundle`
