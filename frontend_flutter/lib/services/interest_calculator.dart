@@ -1,6 +1,8 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 
-class InterestCalculator {
+
+class InterestCalculator extends ChangeNotifier {
   // Method to calculate simple interest
   double calculateSimpleInterest(double principal, double rate, int duration) {
     return double.parse((principal * rate * duration / 100).toStringAsFixed(2));
