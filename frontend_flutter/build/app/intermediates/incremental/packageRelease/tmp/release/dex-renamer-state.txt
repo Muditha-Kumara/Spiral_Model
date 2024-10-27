@@ -1,4 +1,4 @@
-#Sat Oct 26 11:24:25 EEST 2024
+#Sun Oct 27 11:21:43 EET 2024
 base.0=/home/muditha/Spiral_Model/frontend_flutter/build/app/intermediates/dex/release/minifyReleaseWithR8/classes.dex
 path.0=classes.dex
 renamed.0=classes.dex

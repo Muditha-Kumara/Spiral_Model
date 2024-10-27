@@ -32,7 +32,7 @@ migrate_working_dir/
 /build/
 !/build/linux/x64/release/bundle
 !/build/web/
-#!/build/app/outputs/flutter-apk/app-release.apk
+!/build/app/outputs/flutter-apk/app-release.apk
 #!/build/ios/Release-iphoneos/
 #!/build/windows/x64/Release/
 
